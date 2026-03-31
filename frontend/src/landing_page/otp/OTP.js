@@ -95,7 +95,7 @@ const OTP = () => {
     if (finalOtp.length === 6 && !loading) {
         verifyOtp();
     }
-}, [otp]); 
+}, [otp,loading,verifyOtp]); 
 
     const resendOtp = async () => {
         if (timer > 0) return;
