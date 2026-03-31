@@ -17,7 +17,7 @@ function Login() {
 
         try {
             setLoading(true);
-            const res = await axios.post("http://localhost:3002/login", {
+            const res = await axios.post("https://zerodha-backend-dz81.onrender.com/login", {
                 email,
                 password,
             });
@@ -27,7 +27,7 @@ function Login() {
                 localStorage.setItem("user", JSON.stringify(res.data.user));
 
                 // Redirect to Dashboard (Port 3001)
-                window.location.href = `http://localhost:3001/?token=${res.data.token}`;
+                window.location.href = `https://zerodha-backend-dz81.onrender.com/?token=${res.data.token}`;
             } else {
                 alert(res.data.message || "Invalid credentials");
             }

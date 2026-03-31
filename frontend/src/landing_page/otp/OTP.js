@@ -56,7 +56,7 @@ const OTP = () => {
 
         setLoading(true);
         try {
-            const res = await axios.post("http://localhost:3002/verify-otp", {
+            const res = await axios.post("https://zerodha-backend-dz81.onrender.com/verify-otp", {
                 email,
                 otp: finalOtp,
             });
@@ -75,7 +75,7 @@ const OTP = () => {
                     localStorage.setItem("token", res.data.token);
                     localStorage.setItem("user", JSON.stringify(res.data.user));
                     localStorage.removeItem("otpEmail");
-                    window.location.href = "http://localhost:3001";
+                    window.location.href = "https://zerodha-backend-dz81.onrender.com";
                 }
             } else {
                 alert(res.data.message);
@@ -100,7 +100,7 @@ const OTP = () => {
     const resendOtp = async () => {
         if (timer > 0) return;
         try {
-            await axios.post("http://localhost:3002/resend-otp", { email });
+            await axios.post("https://zerodha-backend-dz81.onrender.com/resend-otp", { email });
             setTimer(60);
             setOtp(["", "", "", "", "", ""]);
             alert("New OTP sent to your email!");

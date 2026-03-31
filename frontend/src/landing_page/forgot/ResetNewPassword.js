@@ -16,7 +16,7 @@ const ResetNewPassword = () => {
         setLoading(true);
         try {
             // Backend par naya password bhej rahe hain
-            const res = await axios.post("http://localhost:3002/reset-password", {
+            const res = await axios.post("https://zerodha-backend-dz81.onrender.com/reset-password", {
                 email,
                 newPassword: password
             });

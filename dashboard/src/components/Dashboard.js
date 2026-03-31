@@ -31,7 +31,7 @@ const Dashboard = () => {
       return;
     }
 
-    axios.get("http://localhost:3002/dashboard", {
+    axios.get("https://zerodha-backend-dz81.onrender.com/dashboard", {
       headers: {
         Authorization: token
       }
