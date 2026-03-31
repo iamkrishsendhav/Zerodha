@@ -84,8 +84,8 @@ function Hero() {
 
           <div className="col-lg-6">
             <p>
-              Explore our <a href="#">blog</a> or see what the{" "}
-              <a href="#">media</a> says about us.
+              Explore our <a href="/">blog</a> or see what the{" "}
+              <a href="/">media</a> says about us.
             </p>
           </div>
         </div>

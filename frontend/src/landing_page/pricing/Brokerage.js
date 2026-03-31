@@ -12,7 +12,7 @@ function Brokerage() {
                     <div className="col-lg-8 mb-4">
 
                         <div className="box">
-                            <a href="#" className="heading-link">
+                            <a href="/" className="heading-link">
                                 <h3>Brokerage calculator <FaArrowRight /></h3>
                             </a>
 
@@ -32,7 +32,7 @@ function Brokerage() {
                     <div className="col-lg-4">
 
                         <div className="box small-box text-center">
-                            <a href="#" className="heading-link">
+                            <a href="/" className="heading-link">
                                 <h3>List of charges <FaArrowRight /></h3>
                             </a>
                             <p className="text-muted mt-2">

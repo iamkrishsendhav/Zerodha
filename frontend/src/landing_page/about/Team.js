@@ -66,9 +66,9 @@ function Team() {
 
                                 {/* Social Links */}
                                 <div className="socials">
-                                    <a href="#"><FaGlobe /> Homepage</a>
-                                    <a href="#"><FaComments /> TradingQnA</a>
-                                    <a href="#"><FaTwitter /> Twitter</a>
+                                    <a href="/"><FaGlobe /> Homepage</a>
+                                    <a href="/"><FaComments /> TradingQnA</a>
+                                    <a href="/"><FaTwitter /> Twitter</a>
                                 </div>
                             </div>
 
