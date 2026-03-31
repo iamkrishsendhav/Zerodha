@@ -235,7 +235,8 @@ function Hero() {
         {/* TOP BAR */}
         <div className="top-bar">
           <h5>Support</h5>
-          <a href="#">
+          {/* <a href="#"> */}
+          <a href="/">
             Track Tickets <FaArrowRight />
           </a>
         </div>
@@ -261,10 +262,10 @@ function Hero() {
 
             {/* QUICK LINKS */}
             <div className="links">
-              <a href="#">Track account opening</a>
-              <a href="#">Track segment activation</a>
-              <a href="#">Intraday margins</a>
-              <a href="#">Kite user manual</a>
+              <a href="/">Track account opening</a>
+              <a href="/">Track segment activation</a>
+              <a href="/">Intraday margins</a>
+              <a href="/">Kite user manual</a>
             </div>
 
           </div>
@@ -277,10 +278,10 @@ function Hero() {
 
               <ul>
                 <li>
-                  <a href="#">Current Takeovers and Delisting - January 2024</a>
+                  <a href="/">Current Takeovers and Delisting - January 2024</a>
                 </li>
                 <li>
-                  <a href="#">Latest Intraday leverages - MIS & CO</a>
+                  <a href="/">Latest Intraday leverages - MIS & CO</a>
                 </li>
               </ul>
             </div>
