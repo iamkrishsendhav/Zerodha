@@ -42,7 +42,7 @@ function Hero() {
                         Sign up now
                     </Link>
 
-                    {/* ✅ Login Link added below */}
+                    {/* Login Link added below */}
                     <p className="text-muted" style={{ fontSize: "14px" }}>
                         Already have an account? <Link to="/login" className="text-decoration-none fw-bold" style={{ color: "#387ed1" }}>Login here</Link>
                     </p>

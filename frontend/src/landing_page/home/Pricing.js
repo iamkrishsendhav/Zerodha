@@ -12,7 +12,6 @@ function Pricing() {
             <style>
                 {`
                 .pricing-wrapper {
-                    /* ✅ Padding ko 60px se kam karke 20px kiya taaki white space hat jaye */
                     padding: 20px 0; 
                     background-color: #fff;
                     font-family: "Inter", sans-serif;

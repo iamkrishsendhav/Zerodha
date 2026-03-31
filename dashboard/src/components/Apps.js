@@ -5,7 +5,6 @@ const Apps = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
-  // 👤 user-specific apps (future backend ready)
   const apps = [
     {
       name: "Kite",

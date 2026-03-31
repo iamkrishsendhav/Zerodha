@@ -30,7 +30,6 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-// ✅ OTP ko hamesha String mein generate karein taaki comparison mein error na aaye
 const generateOTP = () => crypto.randomInt(100000, 999999).toString();
 
 // ================= SIGNUP =================
@@ -47,7 +46,7 @@ app.post("/signup", async (req, res) => {
         if (user && user.isVerified) {
             return res.json({
                 success: false,
-                message: "Email already registered, please login"
+                message: "Email already registered, please login",
             });
         }
 
@@ -57,7 +56,7 @@ app.post("/signup", async (req, res) => {
                 return res.json({
                     success: true,
                     message: "OTP already sent, check email",
-                    email
+                    email,
                 });
             }
 
@@ -68,16 +67,53 @@ app.post("/signup", async (req, res) => {
             await user.save();
 
             await transporter.sendMail({
-                from: process.env.EMAIL_USER,
+                from: `"Zerodha Clone" <${process.env.EMAIL_USER}>`,
                 to: email,
-                subject: "OTP Verification",
-                text: `Your OTP is ${otp}`,
+                subject: "Verify your Zerodha Clone account",
+                // text: `Your OTP is ${otp}`,
+                html: `
+<div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f6f8;">
+  <div style="max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px;">
+    
+    <h2 style="color: #ff5722; text-align: center;">Zerodha Clone</h2>
+    
+    <p style="font-size: 16px;">Hello,</p>
+    
+    <p style="font-size: 15px;">
+      Thank you for signing up on <strong>Zerodha Clone</strong>.
+      Please use the OTP below to complete your verification:
+    </p>
+
+    <div style="text-align: center; margin: 20px 0;">
+      <span style="font-size: 28px; font-weight: bold; letter-spacing: 4px; color: #333;">
+        ${otp}
+      </span>
+    </div>
+
+    <p style="font-size: 14px; color: #555;">
+      This OTP is valid for <strong>5 minutes</strong>. Please do not share this code with anyone.
+    </p>
+
+    <hr style="margin: 20px 0;" />
+
+    <p style="font-size: 13px; color: #999;">
+      If you did not request this, please ignore this email.
+    </p>
+
+    <p style="font-size: 14px;">
+      Regards,<br/>
+      <strong>Zerodha Clone Team</strong>
+    </p>
+
+  </div>
+</div>
+`,
             });
 
             return res.json({
                 success: true,
                 message: "OTP sent",
-                email
+                email,
             });
         }
 
@@ -104,17 +140,15 @@ app.post("/signup", async (req, res) => {
         res.json({
             success: true,
             message: "OTP sent",
-            email
+            email,
         });
-
     } catch (err) {
         console.log("Signup Error:", err);
         res.status(500).json({ success: false, message: "Signup error" });
     }
 });
 
-
-// ================= VERIFY OTP (FIXED LOGIC) =================
+// ================= VERIFY OTP =================
 app.post("/verify-otp", async (req, res) => {
     try {
         const { email, otp } = req.body;
@@ -127,27 +161,25 @@ app.post("/verify-otp", async (req, res) => {
 
         if (!user) return res.json({ message: "User not found" });
 
-        // Debugging ke liye (check in terminal)
-        console.log(`Verifying for ${email}: DB_OTP(${user.otp}) VS Sent_OTP(${otp})`);
+        
+        console.log(
+            `Verifying for ${email}: DB_OTP(${user.otp}) VS Sent_OTP(${otp})`,
+        );
 
-        // 1. Check agar OTP null hai (already used)
         if (!user.otp) {
             return res.json({ message: "OTP already used or invalid" });
         }
 
-        // 2. Check Expiry
         if (user.otpExpiry < Date.now()) {
             return res.json({ message: "OTP expired" });
         }
 
-        // 3. Strict Comparison (Dono ko String bana kar check karein)
         if (String(user.otp) !== String(otp)) {
             return res.json({ message: "Invalid OTP" });
         }
 
-        // 4. Success - Update user
         user.isVerified = true;
-        user.otp = null; // Taaki dobara use na ho sake
+        user.otp = null; 
         user.otpExpiry = null;
 
         await user.save();
@@ -155,7 +187,7 @@ app.post("/verify-otp", async (req, res) => {
         const token = jwt.sign(
             { id: user._id, email: user.email },
             process.env.JWT_SECRET,
-            { expiresIn: "1d" }
+            { expiresIn: "1d" },
         );
 
         res.json({
@@ -166,7 +198,6 @@ app.post("/verify-otp", async (req, res) => {
                 email: user.email,
             },
         });
-
     } catch (err) {
         console.log("OTP Error:", err);
         res.status(500).json({ message: "OTP verification error" });
@@ -188,14 +219,50 @@ app.post("/resend-otp", async (req, res) => {
         await user.save();
 
         await transporter.sendMail({
-            from: process.env.EMAIL_USER,
+            from: `"Zerodha Clone" <${process.env.EMAIL_USER}>`,
             to: email,
-            subject: "Resend OTP",
-            text: `Your new OTP is ${otp}`,
+            subject: "New OTP for your Zerodha Clone account",
+            // text: `Your new OTP is ${otp}`,
+            html: `
+<div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f6f8;">
+  <div style="max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px;">
+    
+    <h2 style="color: #ff5722; text-align: center;">Zerodha Clone</h2>
+    
+    <p style="font-size: 16px;">Hello,</p>
+    
+    <p style="font-size: 15px;">
+      You requested a new OTP for your account verification.
+      Please use the OTP below:
+    </p>
+
+    <div style="text-align: center; margin: 20px 0;">
+      <span style="font-size: 28px; font-weight: bold; letter-spacing: 4px; color: #333;">
+        ${otp}
+      </span>
+    </div>
+
+    <p style="font-size: 14px; color: #555;">
+      This OTP is valid for <strong>5 minutes</strong>. Please do not share this code with anyone.
+    </p>
+
+    <hr style="margin: 20px 0;" />
+
+    <p style="font-size: 13px; color: #999;">
+      If you did not request a new OTP, please ignore this email.
+    </p>
+
+    <p style="font-size: 14px;">
+      Regards,<br/>
+      <strong>Zerodha Clone Team</strong>
+    </p>
+
+  </div>
+</div>
+`,
         });
 
         res.json({ message: "OTP resent successfully" });
-
     } catch (err) {
         console.log("Resend OTP Error:", err);
         res.status(500).json({ message: "Resend OTP error" });
@@ -228,7 +295,7 @@ app.post("/login", async (req, res) => {
         const token = jwt.sign(
             { id: user._id, email: user.email },
             process.env.JWT_SECRET,
-            { expiresIn: "1d" }
+            { expiresIn: "1d" },
         );
 
         res.json({
@@ -239,79 +306,108 @@ app.post("/login", async (req, res) => {
                 email: user.email,
             },
         });
-
     } catch (err) {
         console.log("Login Error:", err);
         res.status(500).json({ message: "Login error" });
     }
 });
 
-// ✅ FORGOT PASSWORD ROUTE
+// FORGOT PASSWORD ROUTE
 app.post("/forgot-password", async (req, res) => {
     try {
         const { email } = req.body;
 
-        // 1. Check karein ki user exist karta hai ya nahi
         const user = await UserModel.findOne({ email });
         if (!user) {
-            return res.status(404).json({ success: false, message: "User not found with this email" });
+            return res
+                .status(404)
+                .json({ success: false, message: "User not found with this email" });
         }
 
-        // 2. Naya OTP generate karein
         const otp = crypto.randomInt(100000, 999999).toString();
 
-        // 3. DB mein OTP aur Expiry save karein (10 mins ke liye)
         user.otp = otp;
         user.otpExpiry = Date.now() + 10 * 60 * 1000;
         await user.save();
 
-        // 4. Email bhejein (Aapka existing transporter use karein)
         await transporter.sendMail({
-            from: process.env.EMAIL_USER,
+            from: `"Zerodha Clone" <${process.env.EMAIL_USER}>`,
             to: email,
-            subject: "Password Reset OTP",
-            html: `<h3>Your OTP for password reset is: <b>${otp}</b></h3>
-                   <p>This OTP is valid for 10 minutes.</p>`,
+            subject: "Reset your password - OTP",
+            html: `
+<div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f6f8;">
+  <div style="max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px;">
+    
+    <h2 style="color: #ff5722; text-align: center;">Zerodha Clone</h2>
+    
+    <p style="font-size: 16px;">Hello,</p>
+    
+    <p style="font-size: 15px;">
+      We received a request to reset your password for your <strong>Zerodha Clone</strong> account.
+    </p>
+
+    <div style="text-align: center; margin: 20px 0;">
+      <span style="font-size: 28px; font-weight: bold; letter-spacing: 4px; color: #333;">
+        ${otp}
+      </span>
+    </div>
+
+    <p style="font-size: 14px; color: #555;">
+      This OTP is valid for <strong>10 minutes</strong>. Please do not share this code with anyone.
+    </p>
+
+    <hr style="margin: 20px 0;" />
+
+    <p style="font-size: 13px; color: #999;">
+      If you did not request a password reset, you can safely ignore this email.
+    </p>
+
+    <p style="font-size: 14px;">
+      Regards,<br/>
+      <strong>Zerodha Clone Team</strong>
+    </p>
+
+  </div>
+</div>
+`,
         });
 
         res.json({ success: true, message: "OTP sent successfully" });
-
     } catch (err) {
         console.error("Forgot Pass Error:", err);
         res.status(500).json({ success: false, message: "Server error" });
     }
 });
 
-// ✅ RESET PASSWORD ROUTE (Verify & Save New Password)
+//  RESET PASSWORD ROUTE (Verify & Save New Password)
 app.post("/reset-password", async (req, res) => {
     try {
         const { email, newPassword } = req.body;
 
-        // 1. User ko dhoondo
         const user = await UserModel.findOne({ email });
         if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" });
+            return res
+                .status(404)
+                .json({ success: false, message: "User not found" });
         }
 
-        // 2. Naya password hash karein (bcrypt use karein)
-        // Note: bcrypt aapke backend mein pehle se hoga login/signup ke liye
         const hashedPassword = await bcrypt.hash(newPassword, 10);
-        
-        // 3. Password update karein aur OTP saaf kar dein
+
         user.password = hashedPassword;
-        user.otp = null;        // OTP use ho gaya toh delete kar do
-        user.otpExpiry = null;  // Expiry bhi saaf kar do
-        
+        user.otp = null; 
+        user.otpExpiry = null; 
+
         await user.save();
 
         res.json({ success: true, message: "Password updated successfully!" });
-
     } catch (err) {
         console.error("Reset Pass Error:", err);
-        res.status(500).json({ success: false, message: "Server error while resetting password" });
+        res.status(500).json({
+            success: false,
+            message: "Server error while resetting password",
+        });
     }
 });
-
 
 app.get("/dashboard", auth, (req, res) => {
     res.json({
@@ -446,7 +542,6 @@ app.get("/addHoldings", async (req, res) => {
 
         // newHolding.save();
         newHolding.save();
-
     });
     res.send("Done!");
 });

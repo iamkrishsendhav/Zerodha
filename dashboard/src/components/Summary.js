@@ -110,14 +110,14 @@ const Summary = () => {
 
       <div className="summary-container">
 
-        {/* 👋 Welcome */}
+        {/*  Welcome */}
         <div className="welcome">
           Hi, {user?.name || "User"} 👋
         </div>
 
         <div className="grid">
 
-          {/* 💰 Equity */}
+          {/* Equity */}
           <div className="card">
             <div className="card-title">
               Equity <span className="badge">LIVE</span>
@@ -146,7 +146,7 @@ const Summary = () => {
             <div className="mini-chart"></div>
           </div>
 
-          {/* 📈 Holdings */}
+          {/* Holdings */}
           <div className="card">
             <div className="card-title">
               Holdings (13) <span className="badge">UPDATED</span>
@@ -178,7 +178,7 @@ const Summary = () => {
             <div className="mini-chart"></div>
           </div>
 
-          {/* ⚡ Today */}
+          {/*  Today */}
           <div className="card">
             <div className="card-title">
               Today's Overview <span className="badge">REALTIME</span>

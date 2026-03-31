@@ -7,11 +7,11 @@ const Menu = () => {
 
   const dropdownRef = useRef();
 
-  // 🔥 USER DATA
+  // USER DATA
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const userName = user?.name || "User";
 
-  // 🧠 INITIALS GENERATOR
+  // INITIALS GENERATOR
   const getInitials = (name) => {
     if (!name) return "U";
     const parts = name.split(" ");
@@ -30,7 +30,7 @@ const Menu = () => {
     setIsProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
-  // 🔥 LOGOUT
+  //  LOGOUT
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -39,7 +39,7 @@ const Menu = () => {
     window.location.href = "http://localhost:3000";
   };
 
-  // 🔽 CLICK OUTSIDE CLOSE
+  //  CLICK OUTSIDE CLOSE
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -124,7 +124,7 @@ const Menu = () => {
 
             {isProfileDropdownOpen && (
               <div className="dropdown">
-                {/* 👤 USER INFO */}
+                {/*  USER INFO */}
                 <div className="profile-header">
                   <div className="avatar big">{initials}</div>
 

@@ -5,7 +5,7 @@ const Orders = () => {
   const [filter, setFilter] = useState("ALL");
   const [date, setDate] = useState("");
 
-  // 🔥 Enhanced Dummy Data (real feel)
+  // Enhanced Dummy Data (real feel)
   const fetchOrders = () => {
     const dummy = [
       { id: 1, type: "BUY", stock: "INFY", price: 1550, qty: 10, date: "2026-03-30", status: "Completed" },
@@ -22,7 +22,7 @@ const Orders = () => {
     fetchOrders();
   }, []);
 
-  // ⚡ live refresh
+  // live refresh
   useEffect(() => {
     const interval = setInterval(fetchOrders, 5000);
     return () => clearInterval(interval);

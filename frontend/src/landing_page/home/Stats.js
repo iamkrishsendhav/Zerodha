@@ -25,7 +25,6 @@ function Stats() {
             <style>
                 {`
                 .stats-wrapper { 
-                    /* ✅ Padding minimized to match pricing section */
                     padding: 50px 0; 
                     background-color: #fff;
                     font-family: "Inter", sans-serif;

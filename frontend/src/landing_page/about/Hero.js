@@ -1,4 +1,3 @@
-//
 
 import React, { useEffect } from "react";
 import { FaChartLine, FaUsers, FaLightbulb } from "react-icons/fa";

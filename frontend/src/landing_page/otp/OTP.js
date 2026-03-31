@@ -11,10 +11,9 @@ const OTP = () => {
 
     const email = localStorage.getItem("otpEmail");
 
-    // ✅ 1. Paste Logic (Saara OTP ek baar mein paste karein)
     const handlePaste = (e) => {
-        const data = e.clipboardData.getData("text").slice(0, 6); // Pehle 6 digits lo
-        if (!/^\d+$/.test(data)) return; // Agar number nahi hai toh skip
+        const data = e.clipboardData.getData("text").slice(0, 6); 
+        if (!/^\d+$/.test(data)) return; 
 
         const newOtp = [...otp];
         data.split("").forEach((char, index) => {
@@ -22,26 +21,25 @@ const OTP = () => {
         });
         setOtp(newOtp);
 
-        // Last filled box par focus karo
+    
         const focusIndex = data.length < 6 ? data.length : 5;
         inputs.current[focusIndex].focus();
     };
 
-    // ✅ 2. Handle Input Change
+    
     const handleChange = (value, index) => {
-        if (!/^[0-9]?$/.test(value)) return; // Sirf numbers allow karo
+        if (!/^[0-9]?$/.test(value)) return;
 
         const newOtp = [...otp];
         newOtp[index] = value;
         setOtp(newOtp);
 
-        // Agle box par move karo
         if (value && index < 5) {
             inputs.current[index + 1].focus();
         }
     };
 
-    // ✅ 3. Backspace Logic (Smooth movement)
+ 
     const handleKeyDown = (e, index) => {
         if (e.key === "Backspace") {
             if (!otp[index] && index > 0) {
@@ -50,7 +48,7 @@ const OTP = () => {
         }
     };
 
-    // ✅ 4. Verify OTP Logic
+
     const verifyOtp = useCallback(async () => {
         const finalOtp = otp.join("");
 
@@ -64,22 +62,21 @@ const OTP = () => {
             });
 
             if (res.data.token) {
-                // ✅ Logic Change Starts Here
+            
                 const isForgotPasswordFlow = localStorage.getItem("isResetFlow");
 
                 if (isForgotPasswordFlow === "true") {
-                    // Agar user Forgot Password se aaya hai
-                    localStorage.removeItem("isResetFlow"); // Clean up
-                    localStorage.setItem("resetToken", res.data.token); // Temporary token for security
-                    navigate("/reset-new-password"); // Naye page par bhejo
+                
+                    localStorage.removeItem("isResetFlow");
+                    localStorage.setItem("resetToken", res.data.token); 
+                    navigate("/reset-new-password"); 
                 } else {
-                    // Agar Normal Signup flow hai
+                    
                     localStorage.setItem("token", res.data.token);
                     localStorage.setItem("user", JSON.stringify(res.data.user));
                     localStorage.removeItem("otpEmail");
                     window.location.href = "http://localhost:3001";
                 }
-                // ✅ Logic Change Ends Here
             } else {
                 alert(res.data.message);
                 setOtp(["", "", "", "", "", ""]);
@@ -99,7 +96,7 @@ const OTP = () => {
         verifyOtp();
     }
 }, [otp]); 
-    // ✅ 6. Resend Logic
+
     const resendOtp = async () => {
         if (timer > 0) return;
         try {
@@ -112,7 +109,6 @@ const OTP = () => {
         }
     };
 
-    // ✅ 7. Memory Leak Proof Timer
     useEffect(() => {
         let interval;
         if (timer > 0) {

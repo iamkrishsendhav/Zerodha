@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
-    // 🔥 Ye do fields missing thi, inke bina OTP save nahi hoga
+    
     otp: { 
         type: String 
     },

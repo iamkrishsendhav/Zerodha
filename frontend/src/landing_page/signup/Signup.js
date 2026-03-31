@@ -32,7 +32,6 @@ function Signup() {
 
             console.log("Signup Response:", res.data);
 
-            // ✅ OTP FLOW (Existing logic preserved)
             if (res.data.success || res.data.email) {
                 localStorage.setItem("otpEmail", email);
                 navigate("/otp"); 
@@ -41,7 +40,6 @@ function Signup() {
             }
 
         } catch (err) {
-            // Backend se aane wala specific error message dikhayein
             const errorMsg = err.response?.data?.message || "Something went wrong. Try again.";
             alert(errorMsg);
             console.error("Signup Error:", err);
@@ -138,7 +136,7 @@ function Signup() {
                             type="text"
                             placeholder="Full Name"
                             className="input-field"
-                            value={name} // ✅ Controlled input
+                            value={name} // Controlled input
                             onChange={(e) => setName(e.target.value)}
                             required
                         />
@@ -147,7 +145,7 @@ function Signup() {
                             type="email"
                             placeholder="Email Address"
                             className="input-field"
-                            value={email} // ✅ Controlled input
+                            value={email} // Controlled input
                             onChange={(e) => setEmail(e.target.value)}
                             required
                         />
@@ -156,7 +154,7 @@ function Signup() {
                             type="password"
                             placeholder="Password"
                             className="input-field"
-                            value={password} // ✅ Controlled input
+                            value={password} // Controlled input
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />

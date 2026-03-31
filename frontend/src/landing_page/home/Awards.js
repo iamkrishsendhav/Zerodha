@@ -1,7 +1,7 @@
 import React from "react";
 
 function Awards() {
-    // 💡 Scalable: Bas is array mein naya item add karo, UI apne aap ban jayega
+
     const products = [
         ["Futures and Options", "Commodity derivatives", "Currency derivatives"],
         ["Stocks & IPOs", "Direct mutual funds", "Bonds and Govt. Securities"]

@@ -15,7 +15,7 @@ const ForgotPassword = () => {
         try {
             const res = await axios.post("http://localhost:3002/forgot-password", { email });
             if (res.data.success) {
-                // ✅ OTP Page ko batane ke liye ki ye Reset Flow hai
+        
                 localStorage.setItem("otpEmail", email);
                 localStorage.setItem("isResetFlow", "true"); 
                 
