@@ -44,7 +44,7 @@ function CreateTicket() {
 
                 <div className="links">
                   {item.links.map((link, i) => (
-                    <a key={i} href="#">
+                    <a key={i} href="/">
                       {link}
                     </a>
                   ))}

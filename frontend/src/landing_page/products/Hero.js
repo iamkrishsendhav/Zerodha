@@ -29,7 +29,7 @@ function Hero() {
           Sleek, modern and intuitive trading platforms
         </p>
 
-        <a href="#" className="cta">
+        <a href="/" className="cta">
           Explore investment offerings <FaArrowRight />
         </a>
 
