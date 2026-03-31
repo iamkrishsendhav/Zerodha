@@ -13,12 +13,22 @@ import { GeneralContextProvider } from "./GeneralContext";
 
 const Dashboard = () => {
 
+  const urlParams = new URLSearchParams(window.location.search);
+  const tokenFromURL = urlParams.get("token");
+
+ 
+  if (tokenFromURL) {
+    localStorage.setItem("token", tokenFromURL);
+  }
+
   useEffect(() => {
 
     const token = localStorage.getItem("token");
 
+
     if (!token) {
-      window.location.href = "http://localhost:3000/login";
+      console.log("No token found");
+      return;
     }
 
     axios.get("http://localhost:3002/dashboard", {
@@ -26,18 +36,18 @@ const Dashboard = () => {
         Authorization: token
       }
     })
-    .then(res => {
-      console.log(res.data);
+    .then((res) => {
+      console.log("Dashboard data:", res.data);
     })
-    .catch(err => {
-      console.log(err);
-      // window.location.href = "http://localhost:3000/login";
+    .catch((err) => {
+      console.log("Error:", err);
     });
 
   }, []);
 
   return (
     <div className="dashboard-container">
+
       <GeneralContextProvider>
         <WatchList />
       </GeneralContextProvider>
@@ -52,6 +62,7 @@ const Dashboard = () => {
           <Route path="/apps" element={<Apps />} />
         </Routes>
       </div>
+
     </div>
   );
 };

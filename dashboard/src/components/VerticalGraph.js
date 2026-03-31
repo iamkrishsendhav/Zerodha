@@ -19,15 +19,24 @@ ChartJS.register(
   Legend
 );
 
-export const options = {
+const options = {
   responsive: true,
+
+  maintainAspectRatio: false,
+
+  animation: {
+    duration: 0, 
+  },
+
   plugins: {
     legend: {
-      position: "top",
+      display: false,
     },
-    title: {
-      display: true,
-      text: "Holdings",
+  },
+
+  scales: {
+    y: {
+      beginAtZero: true,
     },
   },
 };
