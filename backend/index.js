@@ -22,8 +22,17 @@ const uri = process.env.MONGO_URL;
 app.use(cors());
 app.use(bodyParser.json());
 
+// const transporter = nodemailer.createTransport({
+//     service: "gmail",
+//     auth: {
+//         user: process.env.EMAIL_USER,
+//         pass: process.env.EMAIL_PASS,
+//     },
+// });
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -33,7 +42,7 @@ const transporter = nodemailer.createTransport({
 const generateOTP = () => crypto.randomInt(100000, 999999).toString();
 
 // ================= SIGNUP =================
-app.post("/signup", async (req, res) => {
+app.post("/signup", async(req, res) => {
     try {
         const { name, email, password } = req.body;
 
@@ -149,7 +158,7 @@ app.post("/signup", async (req, res) => {
 });
 
 // ================= VERIFY OTP =================
-app.post("/verify-otp", async (req, res) => {
+app.post("/verify-otp", async(req, res) => {
     try {
         const { email, otp } = req.body;
 
@@ -161,7 +170,6 @@ app.post("/verify-otp", async (req, res) => {
 
         if (!user) return res.json({ message: "User not found" });
 
-        
         console.log(
             `Verifying for ${email}: DB_OTP(${user.otp}) VS Sent_OTP(${otp})`,
         );
@@ -179,15 +187,13 @@ app.post("/verify-otp", async (req, res) => {
         }
 
         user.isVerified = true;
-        user.otp = null; 
+        user.otp = null;
         user.otpExpiry = null;
 
         await user.save();
 
-        const token = jwt.sign(
-            { id: user._id, email: user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: "1d" },
+        const token = jwt.sign({ id: user._id, email: user.email },
+            process.env.JWT_SECRET, { expiresIn: "1d" },
         );
 
         res.json({
@@ -205,7 +211,7 @@ app.post("/verify-otp", async (req, res) => {
 });
 
 // ================= RESEND OTP =================
-app.post("/resend-otp", async (req, res) => {
+app.post("/resend-otp", async(req, res) => {
     try {
         const { email } = req.body;
         const user = await UserModel.findOne({ email });
@@ -270,7 +276,7 @@ app.post("/resend-otp", async (req, res) => {
 });
 
 // ================= LOGIN =================
-app.post("/login", async (req, res) => {
+app.post("/login", async(req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -292,10 +298,8 @@ app.post("/login", async (req, res) => {
             return res.json({ message: "Invalid password" });
         }
 
-        const token = jwt.sign(
-            { id: user._id, email: user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: "1d" },
+        const token = jwt.sign({ id: user._id, email: user.email },
+            process.env.JWT_SECRET, { expiresIn: "1d" },
         );
 
         res.json({
@@ -313,7 +317,7 @@ app.post("/login", async (req, res) => {
 });
 
 // FORGOT PASSWORD ROUTE
-app.post("/forgot-password", async (req, res) => {
+app.post("/forgot-password", async(req, res) => {
     try {
         const { email } = req.body;
 
@@ -380,7 +384,7 @@ app.post("/forgot-password", async (req, res) => {
 });
 
 //  RESET PASSWORD ROUTE (Verify & Save New Password)
-app.post("/reset-password", async (req, res) => {
+app.post("/reset-password", async(req, res) => {
     try {
         const { email, newPassword } = req.body;
 
@@ -394,8 +398,8 @@ app.post("/reset-password", async (req, res) => {
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
         user.password = hashedPassword;
-        user.otp = null; 
-        user.otpExpiry = null; 
+        user.otp = null;
+        user.otpExpiry = null;
 
         await user.save();
 
@@ -416,9 +420,8 @@ app.get("/dashboard", auth, (req, res) => {
     });
 });
 
-app.get("/addHoldings", async (req, res) => {
-    let tempHoldings = [
-        {
+app.get("/addHoldings", async(req, res) => {
+    let tempHoldings = [{
             name: "BHARTIARTL",
             qty: 2,
             avg: 538.05,
@@ -546,9 +549,8 @@ app.get("/addHoldings", async (req, res) => {
     res.send("Done!");
 });
 
-app.get("/addPositions", async (req, res) => {
-    let tempPositions = [
-        {
+app.get("/addPositions", async(req, res) => {
+    let tempPositions = [{
             product: "CNC",
             name: "EVEREADY",
             qty: 2,
@@ -587,17 +589,17 @@ app.get("/addPositions", async (req, res) => {
     res.send("Done!");
 });
 
-app.get("/allHoldings", async (req, res) => {
+app.get("/allHoldings", async(req, res) => {
     let allHoldings = await HoldingsModel.find({});
     res.json(allHoldings);
 });
 
-app.get("/allPositions", async (req, res) => {
+app.get("/allPositions", async(req, res) => {
     let allPositions = await PositionsModel.find({});
     res.json(allPositions);
 });
 
-app.post("/newOrder", async (req, res) => {
+app.post("/newOrder", async(req, res) => {
     let newOrder = new OrdersModel({
         name: req.body.name,
         qty: req.body.qty,
