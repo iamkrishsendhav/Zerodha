@@ -90,12 +90,12 @@ const OTP = () => {
     }, [otp, email, loading, navigate]); 
 
 
-    useEffect(() => {
-    const finalOtp = otp.join("");
-    if (finalOtp.length === 6 && !loading) {
-        verifyOtp();
-    }
-}, [otp,loading,verifyOtp]); 
+//     useEffect(() => {
+//     const finalOtp = otp.join("");
+//     if (finalOtp.length === 6 && !loading) {
+//         verifyOtp();
+//     }
+// }, [otp,loading,verifyOtp]); 
 
     const resendOtp = async () => {
         if (timer > 0) return;
