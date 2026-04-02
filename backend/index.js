@@ -79,7 +79,6 @@ app.post("/signup", async(req, res) => {
                 from: `"Zerodha Clone" <${process.env.EMAIL_USER}>`,
                 to: email,
                 subject: "Verify your Zerodha Clone account",
-                // text: `Your OTP is ${otp}`,
                 html: `
 <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f6f8;">
   <div style="max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px;">
