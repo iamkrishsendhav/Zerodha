@@ -42,7 +42,121 @@ const transporter = nodemailer.createTransport({
 const generateOTP = () => crypto.randomInt(100000, 999999).toString();
 
 // ================= SIGNUP =================
-app.post("/signup", async(req, res) => {
+// app.post("/signup", async(req, res) => {
+//     try {
+//         const { name, email, password } = req.body;
+
+//         if (!name || !email || !password) {
+//             return res.json({ success: false, message: "All fields required" });
+//         }
+
+//         let user = await UserModel.findOne({ email });
+
+//         if (user && user.isVerified) {
+//             return res.json({
+//                 success: false,
+//                 message: "Email already registered, please login",
+//             });
+//         }
+
+//         if (user && !user.isVerified) {
+
+//             if (user.otp && user.otpExpiry > Date.now()) {
+//                 return res.json({
+//                     success: true,
+//                     message: "OTP already sent, check email",
+//                     email,
+//                 });
+//             }
+
+//             const otp = generateOTP();
+//             user.otp = otp;
+//             user.otpExpiry = Date.now() + 5 * 60 * 1000;
+
+//             await user.save();
+
+//             await transporter.sendMail({
+//                 from: `"Zerodha Clone" <${process.env.EMAIL_USER}>`,
+//                 to: email,
+//                 subject: "Your OTP for Zerodha Clone Verification",
+//                 html: `
+// <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f6f8;">
+//   <div style="max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px;">
+
+//     <h2 style="color: #ff5722; text-align: center;">Zerodha Clone</h2>
+
+//     <p style="font-size: 16px;">Hello,</p>
+
+//     <p style="font-size: 15px;">
+//       Thank you for signing up on <strong>Zerodha Clone</strong>.
+//       Please use the OTP below to complete your verification:
+//     </p>
+
+//     <div style="text-align: center; margin: 20px 0;">
+//       <span style="font-size: 28px; font-weight: bold; letter-spacing: 4px; color: #333;">
+//         ${otp}
+//       </span>
+//     </div>
+
+//     <p style="font-size: 14px; color: #555;">
+//       This OTP is valid for <strong>5 minutes</strong>. Please do not share this code with anyone.
+//     </p>
+
+//     <hr style="margin: 20px 0;" />
+
+//     <p style="font-size: 13px; color: #999;">
+//       If you did not request this, please ignore this email.
+//     </p>
+
+//     <p style="font-size: 14px;">
+//       Regards,<br/>
+//       <strong>Zerodha Clone Team</strong>
+//     </p>
+
+//   </div>
+// </div>
+// `,
+//             });
+
+//             return res.json({
+//                 success: true,
+//                 message: "OTP sent",
+//                 email,
+//             });
+//         }
+
+//         const hashedPassword = await bcrypt.hash(password, 10);
+//         const otp = generateOTP();
+//         const newUser = new UserModel({
+//             name,
+//             email,
+//             password: hashedPassword,
+//             otp,
+//             otpExpiry: Date.now() + 5 * 60 * 1000,
+//             isVerified: false,
+//         });
+
+//         await newUser.save();
+
+//         await transporter.sendMail({
+//             from: process.env.EMAIL_USER,
+//             to: email,
+//             subject: "OTP Verification",
+//             text: `Your OTP is ${otp}`,
+//         });
+
+//         res.json({
+//             success: true,
+//             message: "OTP sent",
+//             email,
+//         });
+//     } catch (err) {
+//         console.log("Signup Error:", err);
+//         res.status(500).json({ success: false, message: "Signup error" });
+//     }
+// });
+
+app.post("/signup", async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
@@ -52,6 +166,7 @@ app.post("/signup", async(req, res) => {
 
         let user = await UserModel.findOne({ email });
 
+        //  Already verified
         if (user && user.isVerified) {
             return res.json({
                 success: false,
@@ -59,8 +174,9 @@ app.post("/signup", async(req, res) => {
             });
         }
 
+        // Existing but not verified
         if (user && !user.isVerified) {
-    
+
             if (user.otp && user.otpExpiry > Date.now()) {
                 return res.json({
                     success: true,
@@ -75,19 +191,20 @@ app.post("/signup", async(req, res) => {
 
             await user.save();
 
+            //  HTML EMAIL
             await transporter.sendMail({
-                from: `"Zerodha Clone" <${process.env.EMAIL_USER}>`,
+                from: `Zerodha Clone <${process.env.EMAIL_USER}>`,
                 to: email,
-                subject: "Verify your Zerodha Clone account",
+                subject: "Your OTP for Zerodha Clone Verification",
                 html: `
 <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f6f8;">
   <div style="max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px;">
     
     <h2 style="color: #ff5722; text-align: center;">Zerodha Clone</h2>
     
-    <p style="font-size: 16px;">Hello,</p>
+    <p>Hello,</p>
     
-    <p style="font-size: 15px;">
+    <p>
       Thank you for signing up on <strong>Zerodha Clone</strong>.
       Please use the OTP below to complete your verification:
     </p>
@@ -98,19 +215,17 @@ app.post("/signup", async(req, res) => {
       </span>
     </div>
 
-    <p style="font-size: 14px; color: #555;">
-      This OTP is valid for <strong>5 minutes</strong>. Please do not share this code with anyone.
+    <p style="color: #555;">
+      This OTP is valid for <strong>5 minutes</strong>.
     </p>
 
-    <hr style="margin: 20px 0;" />
-
-    <p style="font-size: 13px; color: #999;">
+    <p style="color: #999;">
       If you did not request this, please ignore this email.
     </p>
 
     <p style="font-size: 14px;">
-      Regards,<br/>
-      <strong>Zerodha Clone Team</strong>
+    Regards,<br/>
+    <strong>Zerodha Clone Team</strong>
     </p>
 
   </div>
@@ -125,8 +240,10 @@ app.post("/signup", async(req, res) => {
             });
         }
 
+        // New User
         const hashedPassword = await bcrypt.hash(password, 10);
         const otp = generateOTP();
+
         const newUser = new UserModel({
             name,
             email,
@@ -138,11 +255,46 @@ app.post("/signup", async(req, res) => {
 
         await newUser.save();
 
+        // ✅ SAME HTML EMAIL HERE (FIXED)
         await transporter.sendMail({
-            from: process.env.EMAIL_USER,
+            from: `Zerodha Clone <${process.env.EMAIL_USER}>`,
             to: email,
-            subject: "OTP Verification",
-            text: `Your OTP is ${otp}`,
+            subject: "Your OTP for Zerodha Clone Verification",
+            html: `
+<div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f6f8;">
+  <div style="max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px;">
+    
+    <h2 style="color: #ff5722; text-align: center;">Zerodha Clone</h2>
+    
+    <p>Hello,</p>
+    
+    <p>
+      Thank you for signing up on <strong>Zerodha Clone</strong>.
+      Please use the OTP below to complete your verification:
+    </p>
+
+    <div style="text-align: center; margin: 20px 0;">
+      <span style="font-size: 28px; font-weight: bold; letter-spacing: 4px; color: #333;">
+        ${otp}
+      </span>
+    </div>
+
+    <p style="color: #555;">
+      This OTP is valid for <strong>5 minutes</strong>.
+    </p>
+
+    <p style="color: #999;">
+      If you did not request this, please ignore this email.
+    </p>
+    
+    <p style="font-size: 14px;">
+    Regards,<br/>
+    <strong>Zerodha Clone Team</strong>
+    </p>
+
+    </div>
+</div>
+`,
         });
 
         res.json({
@@ -150,6 +302,7 @@ app.post("/signup", async(req, res) => {
             message: "OTP sent",
             email,
         });
+
     } catch (err) {
         console.log("Signup Error:", err);
         res.status(500).json({ success: false, message: "Signup error" });
@@ -157,7 +310,7 @@ app.post("/signup", async(req, res) => {
 });
 
 // ================= VERIFY OTP =================
-app.post("/verify-otp", async(req, res) => {
+app.post("/verify-otp", async (req, res) => {
     try {
         const { email, otp } = req.body;
 
@@ -210,7 +363,7 @@ app.post("/verify-otp", async(req, res) => {
 });
 
 // ================= RESEND OTP =================
-app.post("/resend-otp", async(req, res) => {
+app.post("/resend-otp", async (req, res) => {
     try {
         const { email } = req.body;
         const user = await UserModel.findOne({ email });
@@ -275,7 +428,7 @@ app.post("/resend-otp", async(req, res) => {
 });
 
 // ================= LOGIN =================
-app.post("/login", async(req, res) => {
+app.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -316,7 +469,7 @@ app.post("/login", async(req, res) => {
 });
 
 // FORGOT PASSWORD ROUTE
-app.post("/forgot-password", async(req, res) => {
+app.post("/forgot-password", async (req, res) => {
     try {
         const { email } = req.body;
 
@@ -383,7 +536,7 @@ app.post("/forgot-password", async(req, res) => {
 });
 
 //  RESET PASSWORD ROUTE (Verify & Save New Password)
-app.post("/reset-password", async(req, res) => {
+app.post("/reset-password", async (req, res) => {
     try {
         const { email, newPassword } = req.body;
 
@@ -419,116 +572,116 @@ app.get("/dashboard", auth, (req, res) => {
     });
 });
 
-app.get("/addHoldings", async(req, res) => {
+app.get("/addHoldings", async (req, res) => {
     let tempHoldings = [{
-            name: "BHARTIARTL",
-            qty: 2,
-            avg: 538.05,
-            price: 541.15,
-            net: "+0.58%",
-            day: "+2.99%",
-        },
-        {
-            name: "HDFCBANK",
-            qty: 2,
-            avg: 1383.4,
-            price: 1522.35,
-            net: "+10.04%",
-            day: "+0.11%",
-        },
-        {
-            name: "HINDUNILVR",
-            qty: 1,
-            avg: 2335.85,
-            price: 2417.4,
-            net: "+3.49%",
-            day: "+0.21%",
-        },
-        {
-            name: "INFY",
-            qty: 1,
-            avg: 1350.5,
-            price: 1555.45,
-            net: "+15.18%",
-            day: "-1.60%",
-            isLoss: true,
-        },
-        {
-            name: "ITC",
-            qty: 5,
-            avg: 202.0,
-            price: 207.9,
-            net: "+2.92%",
-            day: "+0.80%",
-        },
-        {
-            name: "KPITTECH",
-            qty: 5,
-            avg: 250.3,
-            price: 266.45,
-            net: "+6.45%",
-            day: "+3.54%",
-        },
-        {
-            name: "M&M",
-            qty: 2,
-            avg: 809.9,
-            price: 779.8,
-            net: "-3.72%",
-            day: "-0.01%",
-            isLoss: true,
-        },
-        {
-            name: "RELIANCE",
-            qty: 1,
-            avg: 2193.7,
-            price: 2112.4,
-            net: "-3.71%",
-            day: "+1.44%",
-        },
-        {
-            name: "SBIN",
-            qty: 4,
-            avg: 324.35,
-            price: 430.2,
-            net: "+32.63%",
-            day: "-0.34%",
-            isLoss: true,
-        },
-        {
-            name: "SGBMAY29",
-            qty: 2,
-            avg: 4727.0,
-            price: 4719.0,
-            net: "-0.17%",
-            day: "+0.15%",
-        },
-        {
-            name: "TATAPOWER",
-            qty: 5,
-            avg: 104.2,
-            price: 124.15,
-            net: "+19.15%",
-            day: "-0.24%",
-            isLoss: true,
-        },
-        {
-            name: "TCS",
-            qty: 1,
-            avg: 3041.7,
-            price: 3194.8,
-            net: "+5.03%",
-            day: "-0.25%",
-            isLoss: true,
-        },
-        {
-            name: "WIPRO",
-            qty: 4,
-            avg: 489.3,
-            price: 577.75,
-            net: "+18.08%",
-            day: "+0.32%",
-        },
+        name: "BHARTIARTL",
+        qty: 2,
+        avg: 538.05,
+        price: 541.15,
+        net: "+0.58%",
+        day: "+2.99%",
+    },
+    {
+        name: "HDFCBANK",
+        qty: 2,
+        avg: 1383.4,
+        price: 1522.35,
+        net: "+10.04%",
+        day: "+0.11%",
+    },
+    {
+        name: "HINDUNILVR",
+        qty: 1,
+        avg: 2335.85,
+        price: 2417.4,
+        net: "+3.49%",
+        day: "+0.21%",
+    },
+    {
+        name: "INFY",
+        qty: 1,
+        avg: 1350.5,
+        price: 1555.45,
+        net: "+15.18%",
+        day: "-1.60%",
+        isLoss: true,
+    },
+    {
+        name: "ITC",
+        qty: 5,
+        avg: 202.0,
+        price: 207.9,
+        net: "+2.92%",
+        day: "+0.80%",
+    },
+    {
+        name: "KPITTECH",
+        qty: 5,
+        avg: 250.3,
+        price: 266.45,
+        net: "+6.45%",
+        day: "+3.54%",
+    },
+    {
+        name: "M&M",
+        qty: 2,
+        avg: 809.9,
+        price: 779.8,
+        net: "-3.72%",
+        day: "-0.01%",
+        isLoss: true,
+    },
+    {
+        name: "RELIANCE",
+        qty: 1,
+        avg: 2193.7,
+        price: 2112.4,
+        net: "-3.71%",
+        day: "+1.44%",
+    },
+    {
+        name: "SBIN",
+        qty: 4,
+        avg: 324.35,
+        price: 430.2,
+        net: "+32.63%",
+        day: "-0.34%",
+        isLoss: true,
+    },
+    {
+        name: "SGBMAY29",
+        qty: 2,
+        avg: 4727.0,
+        price: 4719.0,
+        net: "-0.17%",
+        day: "+0.15%",
+    },
+    {
+        name: "TATAPOWER",
+        qty: 5,
+        avg: 104.2,
+        price: 124.15,
+        net: "+19.15%",
+        day: "-0.24%",
+        isLoss: true,
+    },
+    {
+        name: "TCS",
+        qty: 1,
+        avg: 3041.7,
+        price: 3194.8,
+        net: "+5.03%",
+        day: "-0.25%",
+        isLoss: true,
+    },
+    {
+        name: "WIPRO",
+        qty: 4,
+        avg: 489.3,
+        price: 577.75,
+        net: "+18.08%",
+        day: "+0.32%",
+    },
     ];
 
     tempHoldings.forEach((item) => {
@@ -548,27 +701,27 @@ app.get("/addHoldings", async(req, res) => {
     res.send("Done!");
 });
 
-app.get("/addPositions", async(req, res) => {
+app.get("/addPositions", async (req, res) => {
     let tempPositions = [{
-            product: "CNC",
-            name: "EVEREADY",
-            qty: 2,
-            avg: 316.27,
-            price: 312.35,
-            net: "+0.58%",
-            day: "-1.24%",
-            isLoss: true,
-        },
-        {
-            product: "CNC",
-            name: "JUBLFOOD",
-            qty: 1,
-            avg: 3124.75,
-            price: 3082.65,
-            net: "+10.04%",
-            day: "-1.35%",
-            isLoss: true,
-        },
+        product: "CNC",
+        name: "EVEREADY",
+        qty: 2,
+        avg: 316.27,
+        price: 312.35,
+        net: "+0.58%",
+        day: "-1.24%",
+        isLoss: true,
+    },
+    {
+        product: "CNC",
+        name: "JUBLFOOD",
+        qty: 1,
+        avg: 3124.75,
+        price: 3082.65,
+        net: "+10.04%",
+        day: "-1.35%",
+        isLoss: true,
+    },
     ];
 
     tempPositions.forEach((item) => {
@@ -588,17 +741,17 @@ app.get("/addPositions", async(req, res) => {
     res.send("Done!");
 });
 
-app.get("/allHoldings", async(req, res) => {
+app.get("/allHoldings", async (req, res) => {
     let allHoldings = await HoldingsModel.find({});
     res.json(allHoldings);
 });
 
-app.get("/allPositions", async(req, res) => {
+app.get("/allPositions", async (req, res) => {
     let allPositions = await PositionsModel.find({});
     res.json(allPositions);
 });
 
-app.post("/newOrder", async(req, res) => {
+app.post("/newOrder", async (req, res) => {
     let newOrder = new OrdersModel({
         name: req.body.name,
         qty: req.body.qty,

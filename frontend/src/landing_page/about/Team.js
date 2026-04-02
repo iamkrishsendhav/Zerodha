@@ -46,7 +46,7 @@ function Team() {
                                     className="profile-img"
                                 />
                                 <h4>Krish Sendhav</h4>
-                                <p className="role">Founder, CEO</p>
+                                <p className="role">Founder</p>
                             </div>
 
                             {/* Right */}

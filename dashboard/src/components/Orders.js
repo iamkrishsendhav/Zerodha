@@ -120,12 +120,12 @@ const Orders = () => {
         }
 
         .buy {
-          color: #2ecc71;
+          color: #4fdb8a;
           font-weight: 600;
         }
 
         .sell {
-          color: #e74c3c;
+          color: #ef6c5e;
           font-weight: 600;
         }
 
