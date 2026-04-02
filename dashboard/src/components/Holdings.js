@@ -6,7 +6,7 @@ const Holdings = () => {
   const [allHoldings, setAllHoldings] = useState([]);
 
   useEffect(() => {
-    axios.get("https://zerodha-dashboard-beryl.vercel.app/allHoldings").then((res) => {
+    axios.get("https://zerodha-backend-dz81.onrender.com/allHoldings").then((res) => {
       setAllHoldings(res.data);
     });
   }, []);
