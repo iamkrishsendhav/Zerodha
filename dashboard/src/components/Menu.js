@@ -36,7 +36,7 @@ const Menu = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("otpEmail");
 
-    window.location.href = "http://localhost:3000";
+    window.location.href = "https://zerodha-frontend-final-eta.vercel.app/";
   };
 
   //  CLICK OUTSIDE CLOSE

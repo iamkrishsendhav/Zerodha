@@ -3,45 +3,48 @@ import React, { useState } from "react";
 import axios from "axios";
 
 function Login() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-        if (!email || !password) {
-            alert("Please fill all fields");
-            return;
-        }
+    if (!email || !password) {
+      alert("Please fill all fields");
+      return;
+    }
 
-        try {
-            setLoading(true);
-            const res = await axios.post("https://zerodha-backend-dz81.onrender.com/login", {
-                email,
-                password,
-            });
+    try {
+      setLoading(true);
+      const res = await axios.post(
+        "https://zerodha-backend-dz81.onrender.com/login",
+        {
+          email,
+          password,
+        },
+      );
 
-            if (res.data.token && res.data.user) {
-                localStorage.setItem("token", res.data.token);
-                localStorage.setItem("user", JSON.stringify(res.data.user));
+      if (res.data.token && res.data.user) {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
 
-                // Redirect to Dashboard (Port 3001)
-                window.location.href = `https://zerodha-dashboard-beryl.vercel.app/?token=${res.data.token}`;
-            } else {
-                alert(res.data.message || "Invalid credentials");
-            }
-        } catch (err) {
-            alert(err.response?.data?.message || "Login failed");
-        } finally {
-            setLoading(false);
-        }
-    };
+        // Redirect to Dashboard (Port 3001)
+        window.location.href = `https://zerodha-dashboard-beryl.vercel.app/?token=${res.data.token}`;
+      } else {
+        alert(res.data.message || "Invalid credentials");
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return (
-        <>
-            <style>
-                {`
+  return (
+    <>
+      <style>
+        {`
                 .login-page-wrapper {
                   min-height: 100vh;
                   display: flex;
@@ -140,47 +143,47 @@ function Login() {
                   font-weight: 600;
                 }
                 `}
-            </style>
+      </style>
 
-            <div className="login-page-wrapper">
-                <div className="login-card">
-                    <h2 className="login-title">Welcome back 👋</h2>
+      <div className="login-page-wrapper">
+        <div className="login-card">
+          <h2 className="login-title">Welcome back 👋</h2>
 
-                    <form onSubmit={handleLogin}>
-                        <input
-                            type="email"
-                            placeholder="Email Address"
-                            className="input-field"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
+          <form onSubmit={handleLogin}>
+            <input
+              type="email"
+              placeholder="Email Address"
+              className="input-field"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
 
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            className="input-field"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
+            <input
+              type="password"
+              placeholder="Password"
+              className="input-field"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
 
-                        <div className="forgot-link">
-                            <Link to="/forgot-password">Forgot Password?</Link>
-                        </div>
-
-                        <button type="submit" className="login-btn" disabled={loading}>
-                            {loading ? "Verifying..." : "Login"}
-                        </button>
-                    </form>
-
-                    <div className="footer-text">
-                        Don't have an account? <Link to="/signup">Signup</Link>
-                    </div>
-                </div>
+            <div className="forgot-link">
+              <Link to="/forgot-password">Forgot Password?</Link>
             </div>
-        </>
-    );
+
+            <button type="submit" className="login-btn" disabled={loading}>
+              {loading ? "Verifying..." : "Login"}
+            </button>
+          </form>
+
+          <div className="footer-text">
+            Don't have an account? <Link to="/signup">Signup</Link>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default Login;

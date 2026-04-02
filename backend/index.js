@@ -60,7 +60,7 @@ app.post("/signup", async(req, res) => {
         }
 
         if (user && !user.isVerified) {
-            // Agar OTP pehle se hai aur valid hai to purana hi bhej do
+    
             if (user.otp && user.otpExpiry > Date.now()) {
                 return res.json({
                     success: true,

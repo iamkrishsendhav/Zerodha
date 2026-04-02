@@ -75,7 +75,7 @@ const OTP = () => {
                     localStorage.setItem("token", res.data.token);
                     localStorage.setItem("user", JSON.stringify(res.data.user));
                     localStorage.removeItem("otpEmail");
-                    window.location.href = "https://zerodha-backend-dz81.onrender.com";
+                    window.location.href = "https://zerodha-dashboard-beryl.vercel.app/";
                 }
             } else {
                 alert(res.data.message);
